@@ -37,13 +37,6 @@ pip install -r requirements.txt
 
 ## 🚀 Quick Start
 
-### Core Implementation Snippet
-The core logic of Offset-LoRA can be integrated into any linear layer:
-
-import torch.nn as nn
-# Core Logic: result = x @ (B @ A - B0 @ A0).T
-# See core/layers.py for the full OffsetLinear implementation.
-
 ### Reproducing Numerical Simulations (Chapter 5)
 To generate the Hessian spectral distribution plots:
 
@@ -64,17 +57,6 @@ Offset-LoRA (Blue) exhibits immediate loss decay compared to the "lagging" start
 ### Hessian Spectral Distribution
 * Standard LoRA: Eigenvalues are heavily spiked at zero ("Curvature Vacuum").
 * Offset-LoRA: Eigenvalues are highly clustered at gamma^2, creating a "Circular Bowl" loss landscape that is ideal for first-order optimizers.
-
----
-
-## 📂 Repository Structure
-
-.
-├── core/               # Offset-LoRA layer implementations
-├── simulation/         # Numerical simulations (Hessian analysis, Gradient Flow)
-├── scripts/            # Training scripts for RoBERTa and Llama-3-8B
-├── assets/             # Visualization results and figures
-└── requirements.txt    # Environment dependencies
 
 ---
 
