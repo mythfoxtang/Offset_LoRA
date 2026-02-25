@@ -1,0 +1,24 @@
+# ======= 第 5 章：矩阵理论仿真 (Matrix Dynamics) =======
+numpy>=1.24.0      # 基础张量运算
+scipy>=1.10.0      # Hessian 矩阵分解与条件数计算 (𝜅(𝐻))
+matplotlib>=3.7.0   # 梯度流演化轨迹绘图
+seaborn>=0.12.0    # 特征值分布热力图 (Eigenvalue Clustering)
+pandas>=2.0.0      # 实验数据结构化存储
+
+# ======= 第 6 章：大规模微调 (Downstream Adaptation) =======
+torch>=2.1.0
+modelscope>=1.10.0
+transformers>=4.36.0
+accelerate>=0.25.0
+peft>=0.7.0
+bitsandbytes>=0.41.0   # 4-bit 量化适配 (QLoRA)
+sentencepiece          # Llama 分词核心
+datasets<3.0.0         # 锁定版本防止 API 错误
+evaluate               # 精度评估指标
+
+# ======= 工程工具与依赖补齐 =======
+addict                 # ModelScope 内部调用依赖
+oss2                   # 阿里云 OSS 存储支持
+scikit-learn           # MRPC 任务评估指标计算
+tqdm                   # 进度条显示
+tensorboard            # 训练过程可视化日志
