@@ -52,7 +52,7 @@ bash scripts/run_roberta_mrpc.sh --lr 1e-3 --method offset-lora
 ## 📊 Performance
 
 ### Convergence Speed
-Offset-LoRA (Blue) exhibits immediate loss decay compared to the "lagging" start of Standard LoRA (Red), especially in the first 100 iterations.
+Offset-LoRA shortens the early-stage optimization lag of Standard LoRA and reaches the effective descent regime earlier under controlled simulations.
 
 ### Hessian Spectral Distribution
 * Standard LoRA: Eigenvalues are heavily spiked at zero ("Curvature Vacuum").

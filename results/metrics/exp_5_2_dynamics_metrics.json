@@ -1,0 +1,31 @@
+{
+  "config": {
+    "n_samples": 1024,
+    "d_in": 96,
+    "d_out": 96,
+    "rank": 8,
+    "steps": 80,
+    "lr": 0.9,
+    "standard_init_scale": 0.003,
+    "offset_scale": 0.55,
+    "num_seeds": 24
+  },
+  "standard": {
+    "initial_loss": 0.03537747216548453,
+    "best_10": 0.03537698644052574,
+    "best_20": 0.035376428777454234,
+    "relative_drop_10": 1.3729781385081329e-05,
+    "relative_drop_20": 2.949300688907173e-05,
+    "steps_to_5pct_drop": 80
+  },
+  "offset_orthogonal": {
+    "initial_loss": 0.03537747216548453,
+    "best_10": 0.0350566465224562,
+    "best_20": 0.03471112149016822,
+    "relative_drop_10": 0.009068642370139076,
+    "relative_drop_20": 0.01883545189999246,
+    "steps_to_5pct_drop": 50
+  },
+  "standard_seedwise_steps_to_5pct_drop_mean": 80.0,
+  "offset_orthogonal_seedwise_steps_to_5pct_drop_mean": 51.166666666666664
+}
