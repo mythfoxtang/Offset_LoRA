@@ -1,0 +1,27 @@
+{
+  "standard": {
+    "peak": 2.468,
+    "peak_step": 0,
+    "mean": 0.8070866666666667,
+    "variance": 0.09994238182222223,
+    "std": 0.3161366505519761,
+    "final": 0.7351,
+    "drop_from_start": 1.7328999999999999,
+    "best_in_window": 0.664
+  },
+  "offset": {
+    "peak": 1.3978,
+    "peak_step": 0,
+    "mean": 0.7608566666666668,
+    "variance": 0.01928229378888889,
+    "std": 0.13886069922367844,
+    "final": 0.7356,
+    "drop_from_start": 0.6621999999999999,
+    "best_in_window": 0.69
+  },
+  "delta": {
+    "peak_gap": 1.0702,
+    "variance_gap": 0.08066008803333334,
+    "cumulative_gain": 1.3868999999999998
+  }
+}

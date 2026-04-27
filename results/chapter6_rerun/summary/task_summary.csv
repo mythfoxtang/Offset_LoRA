@@ -1,0 +1,6 @@
+﻿task_lr,num_pairs,peak_win_rate,variance_win_rate,drop_win_rate
+llama_sst2_lr0.0001,1,1.0,1.0,0.0
+llama_sst2_lr0.0005,1,0.0,0.0,0.0
+roberta_mrpc_lr0.0005,1,0.0,0.0,0.0
+roberta_mrpc_lr0.001,1,1.0,0.0,0.0
+roberta_sst2_lr0.001,1,1.0,1.0,1.0
