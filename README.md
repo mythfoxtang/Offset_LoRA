@@ -1,75 +1,164 @@
-# Offset-LoRA: Gradient-based Initialization Optimization for LLM Adaptation
+# Offset-LoRA
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
+Offset-LoRA is a LoRA initialization method for improving the early-stage
+optimization stability of large language model adaptation.
 
-This repository contains the official implementation of the paper: **"Offset-LoRA: Gradient-based Initialization Optimization for Large Language Model Adaptation."**
+The core parameterization is:
 
-## 📖 Overview
+```math
+\Delta W = BA - B_0A_0
+```
 
-Standard LoRA (Low-Rank Adaptation) suffers from two critical geometric bottlenecks at initialization ($B=0$):
+`A0` and `B0` are fixed offset buffers. `A` and `B` are initialized from the
+same values, so the initial effective update is still zero, while the trainable
+branch starts from a non-degenerate point.
 
-1. **Gradient Cold-Start**: Initial gradients in specific subspaces cancel out due to symmetry, leading to slow convergence in early training stages.
-2. **Curvature Vacuum**: The initial sub-Hessian matrix $H_{AA} = 0$, resulting in an extremely flat and ill-conditioned loss landscape.
+This repository contains the code, reproduction scripts, rerun utilities, and
+experiment artifacts used for the undergraduate thesis:
 
-**Offset-LoRA** eliminates these issues by introducing an **Orthogonal Offset Compensation** mechanism:
+**Offset-LoRA: Gradient-based Initialization Optimization for Large Language
+Model Adaptation**
 
-$$\Delta W = BA - B_0A_0$$
+## What Is Included
 
-By ensuring a non-zero, well-conditioned initial state without altering the pre-trained weights, Offset-LoRA achieves superior stability and faster convergence.
+```text
+src/offset_lora/              Core Offset-LoRA layers and initialization helpers
+src/utils/                    Matrix utility functions
+simulation/                   Chapter 5 controlled matrix experiments
+experiments/                  Original downstream task scripts
+scripts/                      Small reproduction scripts used by the thesis
+chapter6_rerun_pack/          Current Chapter 6 rerun pack
+chapter6_rerun_roberta/       RoBERTa rerun scripts
+chapter6_rerun_llama/         Llama rerun scripts
+chapter6_replot_code/         Plotting code for Chapter 6 loss curves
+results/                      Figures, metrics, raw JSON runs, and summaries
+```
 
----
+The newest code from the thesis working directory is organized under
+`chapter6_rerun_pack/`, `chapter6_rerun_roberta/`, `chapter6_rerun_llama/`, and
+`chapter6_replot_code/`.
 
-## ✨ Key Features
+## Environment
 
-* 🚀 **Warmup-Free Training**: Eliminates the need for complex learning rate schedulers; supports high learning rates (e.g., $1 \times 10^{-3}$) from step zero.
-* 📉 **Curvature Optimization**: Leverages **Eigenvalue Clustering Theory** to ensure initial Hessian eigenvalues are concentrated, minimizing the condition number $\kappa \to 1$.
-* 🛡️ **Gradient Locking Effect**: Maintains dynamical stability during dimension expansion through isometric mapping properties.
-* 🧩 **Plug-and-Play**: Fully compatible with the HuggingFace `transformers` and `peft` ecosystems.
-## 🛠️ Installation
+Python 3.8+ is recommended.
 
-git clone https://github.com/YourUsername/Offset-LoRA.git
-cd Offset-LoRA
+```bash
 pip install -r requirements.txt
+```
 
----
+For Llama 4-bit experiments, make sure the local machine has a compatible CUDA,
+PyTorch, and `bitsandbytes` setup.
 
-## 🚀 Quick Start
+## Chapter 5 Reproduction
 
-### Reproducing Numerical Simulations (Chapter 5)
-To generate the Hessian spectral distribution plots:
+Run the controlled low-rank simulation:
 
-python simulation/hessian_analysis.py --save_plot
+```bash
+python simulation/exp_5_2_dynamics.py
+```
 
-### LLM Fine-tuning (Chapter 6)
-To run RoBERTa-large on the GLUE/MRPC task:
+Run the thesis-side reproduction script:
 
-bash scripts/run_roberta_mrpc.sh --lr 1e-3 --method offset-lora
+```bash
+python scripts/reproduce_section_5_2.py
+```
 
----
+Main outputs:
 
-## 📊 Performance
+```text
+results/figures/exp_5_2_dynamics.png
+results/metrics/exp_5_2_dynamics_metrics.json
+results/figures/section_5_2_reproduction.png
+results/metrics/section_5_2_reproduction_metrics.json
+```
 
-### Convergence Speed
-Offset-LoRA shortens the early-stage optimization lag of Standard LoRA and reaches the effective descent regime earlier under controlled simulations.
+## Chapter 6 Reruns
 
-### Hessian Spectral Distribution
-* Standard LoRA: Eigenvalues are heavily spiked at zero ("Curvature Vacuum").
-* Offset-LoRA: Eigenvalues are highly clustered at gamma^2, creating a "Circular Bowl" loss landscape that is ideal for first-order optimizers.
+The current rerun pack is designed to save structured JSON for every run and
+then aggregate paired comparisons between `standard` and `offset` modes.
 
----
+Run RoBERTa examples:
 
-## 📜 Citation
+```powershell
+.\chapter6_rerun_pack\roberta\run_roberta_examples.ps1
+```
 
-If you find this work useful in your research, please cite:
+Run Llama examples:
 
+```powershell
+.\chapter6_rerun_pack\llama\run_llama_examples.ps1
+```
+
+Aggregate all raw runs:
+
+```bash
+python chapter6_rerun_pack/aggregate_runs.py
+```
+
+Expected summary outputs:
+
+```text
+results/chapter6_rerun/raw/*.json
+results/chapter6_rerun/summary/paired_runs.csv
+results/chapter6_rerun/summary/task_summary.csv
+```
+
+The repository already includes the latest raw JSON results and generated
+summary CSV files.
+
+## Replotting Chapter 6 Curves
+
+Use `chapter6_replot_code/` to generate early-window comparison plots from loss
+curves.
+
+Example:
+
+```bash
+python chapter6_replot_code/make_chapter6_plots.py \
+  --standard chapter6_replot_code/inputs/mrpc_1e3_standard.json \
+  --offset chapter6_replot_code/inputs/mrpc_1e3_offset.json \
+  --tag mrpc_1e3 \
+  --window 50 \
+  --rolling 8
+```
+
+Outputs are written to:
+
+```text
+chapter6_replot_code/outputs/<tag>/
+```
+
+## Main Experiment Results
+
+Current Chapter 6 paired summary:
+
+```text
+results/chapter6_rerun/summary/task_summary.csv
+```
+
+Current Chapter 6 plotted curves:
+
+```text
+chapter6_replot_code/outputs/
+```
+
+Current Chapter 5 figures:
+
+```text
+results/figures/
+```
+
+## Citation
+
+```bibtex
 @article{tang2026offsetlora,
   title={Offset-LoRA: Gradient-based Initialization Optimization for Large Language Model Adaptation},
   author={Tang, Zhaoyi},
   school={School of Mathematical Sciences, Fudan University},
   year={2026}
 }
+```
 
-## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
+
+This project is released under the MIT License.
